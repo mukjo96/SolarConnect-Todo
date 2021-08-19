@@ -27,6 +27,13 @@ export const useTodo = () => {
 
     const toggleTodo = (id: number) => {
         //@TODO
+        const todoIndex = todoState.findIndex((todo) => todo.id === id);
+        const changingTodo = todoState[todoIndex];
+        changingTodo.done = !changingTodo.done;
+        setTodoState((prevState) => {
+            prevState.splice(todoIndex, 1, changingTodo);
+            return [...prevState];
+        });
     };
 
     const removeTodo = (id: number) => {

@@ -61,9 +61,9 @@ interface TodoItemProps {
 }
 
 const TodoItem = ({ toggleTodo, removeTodo, todo }: TodoItemProps) => {
-    const done = false;
+    const done = todo.done;
     const handleToggle = () => {
-        console.log("e");
+        toggleTodo(todo.id);
     };
 
     const handleRemove = () => {
