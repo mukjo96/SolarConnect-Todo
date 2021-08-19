@@ -5,6 +5,15 @@
     ],
     "parser": "@typescript-eslint/parser",
     "plugins": ["@typescript-eslint", "react", "react-hooks"],
+    "rules": {
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/camelcase": "off",
+        "react/prop-types": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "off",
+        "@typescript-eslint/interface-name-prefix": "off"
+    },
     "overrides": [
         {
             "files": ["*.js", "*.jsx"],

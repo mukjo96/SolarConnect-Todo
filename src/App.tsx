@@ -5,7 +5,7 @@ import TodoContainer from "./components/todo/TodoContainer";
 
 function App() {
     //@TODO login
-    let isLogged = true;
+    const isLogged = true;
 
     const RenderLayout = (
         <div>
