@@ -21,11 +21,11 @@ interface HooksTodoHeadProps {
 }
 
 const Todofooter = ({ todos }: HooksTodoHeadProps) => {
-    const undoneTasks = todos.filter((todo) => !todo.done);
+    const undoneTasks = todos && todos.filter((todo) => !todo.done);
     return (
         <TodoFooterBlock>
             <LeftText className="tasks-left">
-                {undoneTasks.length} items left
+                {undoneTasks?.length ?? 0} items left
             </LeftText>
         </TodoFooterBlock>
     );
