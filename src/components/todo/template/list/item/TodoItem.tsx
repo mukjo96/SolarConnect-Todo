@@ -1,10 +1,10 @@
 import { CheckOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Itodo } from "components/todo/TodoService";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled, { css } from "styled-components";
 import { Modal } from "antd";
 import moment, { Moment } from "moment";
-import "moment/locale/ko";
+
 import InputForm from "../../create/InputForm";
 
 const Remove = styled.div`
@@ -48,16 +48,19 @@ const CheckCircle = styled.div<{ done: boolean }>`
         `}
 `;
 
-const Text = styled.div<{ done: boolean }>`
+const Text = styled.div<{ done: boolean; isOverflow?: boolean }>`
     flex: 1;
     font-size: 16px;
     color: #119955;
+    overflow: hidden;
+    text-overflow: ellipsis;
     ${(props) =>
         props.done &&
         css`
             color: #ced4da;
             text-decoration: line-through;
         `}
+    cursor: ${(props) => props.isOverflow && "pointer"};
 `;
 
 const BeforeDate = styled.span`
@@ -80,17 +83,24 @@ const TodoItem = ({
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [editValue, setEditValue] = useState(todo);
+    const [isOverflow, setIsOverflow] = useState(false);
+    const textRef = useRef<HTMLInputElement>(null);
     const { text, done } = todo;
     const goalMoment = moment(todo.goalDate, "YYYY-MM-DD");
     const goalDate = todo.goalDate ? (
         goalMoment.diff(moment(), "days") > 0 ? (
-            goalMoment.fromNow()
+            goalMoment.format("ddd MMMM D, YYYY")
         ) : (
-            <BeforeDate>{goalMoment.fromNow()}</BeforeDate>
+            <BeforeDate>{goalMoment.format("ddd MMMM D, YYYY")}</BeforeDate>
         )
     ) : (
         ""
     );
+
+    useEffect(() => {
+        const { current } = textRef;
+        current && setIsOverflow(isEllipsisActive(textRef.current));
+    }, [textRef]);
 
     const handleToggle = () => {
         toggleTodo(todo.id);
@@ -106,17 +116,42 @@ const TodoItem = ({
         setShowEditModal(false);
     };
 
+    const isEllipsisActive = (ref: HTMLInputElement | null) => {
+        if (ref) {
+            return ref.offsetWidth < ref.scrollWidth;
+        }
+        return false;
+    };
+
     const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         setEditValue((prev) => ({ ...prev, text: e.target.value }));
     const handleDateChange = (value: Moment | null, dateString: string) =>
         setEditValue((prev) => ({ ...prev, goalDate: dateString }));
+
+    function ellipsisModal(text: string) {
+        Modal.info({
+            title: "View More",
+            content: text,
+        });
+    }
+
+    const handleTextClick = () => {
+        isOverflow && ellipsisModal(text);
+    };
 
     return (
         <TodoItemBlock>
             <CheckCircle done={done} onClick={handleToggle}>
                 {done && <CheckOutlined />}
             </CheckCircle>
-            <Text done={done}>{text}</Text>
+            <Text
+                done={done}
+                ref={textRef}
+                onClick={handleTextClick}
+                isOverflow={isOverflow}
+            >
+                {text}
+            </Text>
             <Text done={done}>{goalDate}</Text>
             <Edit onClick={() => setShowEditModal(true)}>
                 <EditOutlined />

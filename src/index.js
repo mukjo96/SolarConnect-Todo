@@ -6,9 +6,11 @@ import App from "./App";
 const GlobalStyle = createGlobalStyle`
   body {
     background: #eeeeee;
+    height: auto;
   }
+  
 
-
+  //ant-design component
   .ant-btn {
     :hover, :focus{
       color: #119955 !important;

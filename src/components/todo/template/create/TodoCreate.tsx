@@ -38,7 +38,7 @@ const FoldContainer = styled.div`
 const FoldButton = styled.button`
     padding: 0;
     height: 36px;
-    margin-right: 40px;
+    margin-right: 48px;
     border: none;
     font-size: 24px;
     color: #33bb77;
@@ -50,7 +50,6 @@ const InsertFormPositioner = styled.div`
 `;
 
 const InsertForm = styled.form<{ open: boolean }>`
-    /* display: ${(props) => (props.open ? "flex" : "none")}; */
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -90,7 +89,7 @@ const TodoCreate = ({
     createTodo,
     incrementNextId,
 }: TodoCreateProps) => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(true);
     const [value, setValue] = useState({
         text: "",
         goalDate: "",
@@ -102,9 +101,16 @@ const TodoCreate = ({
     const handleDateChange = (value: Moment | null, dateString: string) =>
         setValue((prev) => ({ ...prev, goalDate: dateString }));
 
+    const validateText = (text: string) => {
+        if (!text) return "내용을 입력해주세요";
+        if (!text.trim()) return "내용을 입력해주세요";
+        if (text.length > 200) return "내용은 200자 이하로 작성해주세요.";
+        return "success";
+    };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 새로고침 방지
-        if (value.text) {
+        if (validateText(value.text) === "success") {
             createTodo({
                 id: nextId,
                 text: value.text,
@@ -113,15 +119,15 @@ const TodoCreate = ({
             });
             incrementNextId(); // nextId 하나 증가
             setValue({ text: "", goalDate: "" }); // input 초기화
+            setOpen(false); // open 닫기
         } else {
-            error();
+            error(validateText(value.text));
         }
-        setOpen(false); // open 닫기
     };
 
-    function error() {
+    function error(text: string) {
         Modal.error({
-            content: "내용을 입력해주세요.",
+            content: text,
         });
     }
 

@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const TodoHeadBlock = styled.div`
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding-top: 52px;
     padding-bottom: 24px;
     border-bottom: 3px solid #33bb77;
+`;
+
+const DateBlock = styled.div`
+    display: flex;
+    justify-content: center;
 `;
 
 const DateText = styled.div`
@@ -17,6 +24,12 @@ const DateText = styled.div`
 
 const DayText = styled.div`
     font-size: 22px;
+    color: #119955;
+    padding-top: 5px;
+`;
+
+const TimeText = styled.div`
+    font-size: 18px;
     color: #119955;
     padding-top: 5px;
 `;
@@ -40,11 +53,22 @@ const TodoHead = () => {
         month: "long",
         day: "numeric",
     });
+    const [nowTime, setNowTime] = useState("");
+    useEffect(() => {
+        const timer = setInterval(
+            () => setNowTime(nowDate.toTimeString()),
+            1000
+        );
+        return () => clearInterval(timer);
+    });
 
     return (
         <TodoHeadBlock>
-            <DayText>{weekName[weekDayNumber]}</DayText>
-            <DateText>{dateString}</DateText>
+            <DateBlock>
+                <DayText>{weekName[weekDayNumber]}</DayText>
+                <DateText>{dateString}</DateText>
+            </DateBlock>
+            <TimeText>{nowTime.substr(0, 8)}</TimeText>
         </TodoHeadBlock>
     );
 };
