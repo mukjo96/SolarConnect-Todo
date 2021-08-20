@@ -6,11 +6,11 @@ https://solar-connect-todo.vercel.app/
 
 ## 설치
 
-`npm install`
+`yarn install`
 
 ## 시작
 
-`npm run start`
+`yarn start`
 
 ## 기능 구현
 
