@@ -8,8 +8,9 @@ import {
 import { Itodo } from "components/todo/TodoService";
 import { Moment } from "moment";
 
+import { errorModal } from "components/common/Modal";
+import { validateText } from "utils/validate";
 import InputForm from "./InputForm";
-import { Modal } from "antd";
 
 const CircleButton = styled.button`
     background: #33bb77;
@@ -101,13 +102,6 @@ const TodoCreate = ({
     const handleDateChange = (value: Moment | null, dateString: string) =>
         setValue((prev) => ({ ...prev, goalDate: dateString }));
 
-    const validateText = (text: string) => {
-        if (!text) return "내용을 입력해주세요";
-        if (!text.trim()) return "내용을 입력해주세요";
-        if (text.length > 200) return "내용은 200자 이하로 작성해주세요.";
-        return "success";
-    };
-
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault(); // 새로고침 방지
         if (validateText(value.text) === "success") {
@@ -121,15 +115,9 @@ const TodoCreate = ({
             setValue({ text: "", goalDate: "" }); // input 초기화
             setOpen(false); // open 닫기
         } else {
-            error(validateText(value.text));
+            errorModal(validateText(value.text));
         }
     };
-
-    function error(text: string) {
-        Modal.error({
-            content: text,
-        });
-    }
 
     return (
         <>

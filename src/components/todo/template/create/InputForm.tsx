@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import moment, { Moment } from "moment";
 import { DatePicker } from "antd";
-import { ReactElement } from "react";
+import { useState } from "react";
+import { validateText } from "utils/validate";
 
-const Input = styled.input`
+const Input = styled.input<{ error: string }>`
     padding: 12px;
-    border: 1px solid #dddddd;
+    border: 1px solid
+        ${(props) => (props.error !== "success" ? "red" : "#dddddd")};
     width: 100%;
     outline: none;
     font-size: 21px;
@@ -17,11 +19,17 @@ const Input = styled.input`
     }
 `;
 
+const ErrorMessage = styled.div`
+    height: 24px;
+    color: red;
+`;
+
 const StyledDatePicker = styled(DatePicker)`
-    margin-top: 12px;
     width: 50%;
 `;
-const InputContainer = styled.div``;
+const InputContainer = styled.div`
+    width: 70%;
+`;
 
 interface inputProps {
     handleTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -36,13 +44,20 @@ const InputForm = ({
     handleTextChange,
     handleDateChange,
     value,
-}: inputProps): ReactElement => {
-    function disabledDate(current: any) {
+}: inputProps) => {
+    const [error, setError] = useState("success");
+
+    function disabledDate(current: Moment) {
         // Can not select days before today
         return (
             current &&
             current.format("YYYY-MM-DD") < moment().format("YYYY-MM-DD")
         );
+    }
+
+    function handleValidate(e: React.FocusEvent<HTMLInputElement>) {
+        const { value } = e.target;
+        setError(validateText(value));
     }
 
     return (
@@ -52,7 +67,10 @@ const InputForm = ({
                 placeholder="What's need to be done?"
                 onChange={handleTextChange}
                 value={value.text}
+                onBlur={handleValidate}
+                error={error}
             />
+            <ErrorMessage>{error !== "success" ? error : ""}</ErrorMessage>
             <StyledDatePicker
                 format="YYYY-MM-DD"
                 disabledDate={disabledDate}

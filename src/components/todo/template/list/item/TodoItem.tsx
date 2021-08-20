@@ -6,6 +6,7 @@ import { Modal } from "antd";
 import moment, { Moment } from "moment";
 
 import InputForm from "../../create/InputForm";
+import { ellipsisModal } from "components/common/Modal";
 
 const Remove = styled.div`
     display: flex;
@@ -85,10 +86,11 @@ const TodoItem = ({
     const [editValue, setEditValue] = useState(todo);
     const [isOverflow, setIsOverflow] = useState(false);
     const textRef = useRef<HTMLInputElement>(null);
+
     const { text, done } = todo;
     const goalMoment = moment(todo.goalDate, "YYYY-MM-DD");
     const goalDate = todo.goalDate ? (
-        goalMoment.diff(moment(), "days") > 0 ? (
+        goalMoment.diff(moment(), "days", true) >= 0 ? (
             goalMoment.format("ddd MMMM D, YYYY")
         ) : (
             <BeforeDate>{goalMoment.format("ddd MMMM D, YYYY")}</BeforeDate>
@@ -127,13 +129,6 @@ const TodoItem = ({
         setEditValue((prev) => ({ ...prev, text: e.target.value }));
     const handleDateChange = (value: Moment | null, dateString: string) =>
         setEditValue((prev) => ({ ...prev, goalDate: dateString }));
-
-    function ellipsisModal(text: string) {
-        Modal.info({
-            title: "View More",
-            content: text,
-        });
-    }
 
     const handleTextClick = () => {
         isOverflow && ellipsisModal(text);
