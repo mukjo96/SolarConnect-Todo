@@ -17,6 +17,10 @@ const Input = styled.input`
     }
 `;
 
+const StyledDatePicker = styled(DatePicker)`
+    margin-top: 12px;
+    width: 50%;
+`;
 const InputContainer = styled.div``;
 
 interface inputProps {
@@ -49,13 +53,14 @@ const InputForm = ({
                 onChange={handleTextChange}
                 value={value.text}
             />
-            <DatePicker
+            <StyledDatePicker
                 format="YYYY-MM-DD"
                 disabledDate={disabledDate}
                 onChange={handleDateChange}
                 value={
                     value.goalDate ? moment(value.goalDate, "YYYY-MM-DD") : null
                 }
+                placeholder="Select your Goal Date"
             />
         </InputContainer>
     );

@@ -19,7 +19,7 @@ const Remove = styled.div`
 `;
 
 const Edit = styled(Remove)`
-    margin-right: 6px;
+    margin-right: 12px;
 `;
 
 const TodoItemBlock = styled.div`
@@ -27,11 +27,6 @@ const TodoItemBlock = styled.div`
     align-items: center;
     padding-top: 12px;
     padding-bottom: 12px;
-    &:hover {
-        ${Remove} {
-            display: initial;
-        }
-    }
 `;
 
 const CheckCircle = styled.div<{ done: boolean }>`
