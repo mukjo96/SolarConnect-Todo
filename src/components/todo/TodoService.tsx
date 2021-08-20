@@ -41,6 +41,14 @@ export const useTodo = () => {
         });
     };
 
+    const editTodo = (id: number, newTodo: Itodo) => {
+        const todoIndex = todoState.findIndex((todo) => todo.id === id);
+        setTodoState((prevState) => {
+            prevState.splice(todoIndex, 1, newTodo);
+            return [...prevState];
+        });
+    };
+
     const removeTodo = (id: number) => {
         setTodoState((prevState) =>
             prevState.filter((todo: Itodo) => todo.id !== id)
@@ -75,5 +83,6 @@ export const useTodo = () => {
         toggleTodo,
         removeTodo,
         createTodo,
+        editTodo,
     };
 };

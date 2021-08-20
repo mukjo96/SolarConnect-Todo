@@ -14,12 +14,13 @@ const TodoContainer = () => {
         toggleTodo,
         removeTodo,
         createTodo,
+        editTodo,
     } = useTodo();
 
     if (todoState === null) {
         return <Loading />;
     }
-    console.log(todoState);
+
     return (
         <>
             <TodoTemplate>
@@ -32,6 +33,7 @@ const TodoContainer = () => {
                 <TodoList
                     toggleTodo={toggleTodo}
                     removeTodo={removeTodo}
+                    editTodo={editTodo}
                     todos={todoState}
                 />
                 <TodoFooter todos={todoState} />

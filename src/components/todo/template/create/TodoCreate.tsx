@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import { Itodo } from "components/todo/TodoService";
-import moment, { Moment } from "moment";
-import { DatePicker } from "antd";
+import { Moment } from "moment";
+
+import InputForm from "./InputForm";
 
 const CircleButton = styled.button<{ open: boolean }>`
     background: #33bb77;
@@ -31,28 +32,13 @@ const InsertFormPositioner = styled.div`
 const InsertForm = styled.form`
     display: flex;
     align-items: center;
+    justify-content: space-between;
     background: #eeeeee;
     padding-left: 40px;
     padding-top: 36px;
     padding-right: 60px;
     padding-bottom: 36px;
 `;
-
-const Input = styled.input`
-    padding: 12px;
-    border: 1px solid #dddddd;
-    width: 100%;
-    outline: none;
-    font-size: 21px;
-    box-sizing: border-box;
-    color: #119955;
-    &::placeholder {
-        color: #dddddd;
-        font-size: 16px;
-    }
-`;
-
-const InputContainer = styled.div``;
 
 interface TodoCreateProps {
     nextId: number;
@@ -92,37 +78,15 @@ const TodoCreate = ({
         setOpen(false); // open 닫기
     };
 
-    function disabledDate(current: any) {
-        // Can not select days before today and today
-
-        return (
-            current &&
-            current.format("YYYY-MM-DD") < moment().format("YYYY-MM-DD")
-        );
-    }
-
     return (
         <>
             <InsertFormPositioner>
                 <InsertForm onSubmit={handleSubmit}>
-                    <InputContainer>
-                        <Input
-                            autoFocus
-                            placeholder="What's need to be done?"
-                            onChange={handleTextChange}
-                            value={value.text}
-                        />
-                        <DatePicker
-                            format="YYYY-MM-DD"
-                            disabledDate={disabledDate}
-                            onChange={handleDateChange}
-                            value={
-                                value.goalDate
-                                    ? moment(value.goalDate, "YYYY-MM-DD")
-                                    : null
-                            }
-                        />
-                    </InputContainer>
+                    <InputForm
+                        handleTextChange={handleTextChange}
+                        handleDateChange={handleDateChange}
+                        value={value}
+                    />
                     <CircleButton onClick={handleToggle} open={open}>
                         <PlusCircleOutlined />
                     </CircleButton>

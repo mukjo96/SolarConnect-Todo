@@ -1,8 +1,11 @@
-import { CheckOutlined, DeleteOutlined } from "@ant-design/icons";
+import { CheckOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Itodo } from "components/todo/TodoService";
 import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { Modal } from "antd";
+import moment, { Moment } from "moment";
+import "moment/locale/ko";
+import InputForm from "../../create/InputForm";
 
 const Remove = styled.div`
     display: flex;
@@ -10,6 +13,13 @@ const Remove = styled.div`
     justify-content: center;
     color: #119955;
     font-size: 16px;
+    :hover {
+        cursor: pointer;
+    }
+`;
+
+const Edit = styled(Remove)`
+    margin-right: 6px;
 `;
 
 const TodoItemBlock = styled.div`
@@ -55,40 +65,90 @@ const Text = styled.div<{ done: boolean }>`
         `}
 `;
 
+const BeforeDate = styled.span`
+    color: red;
+`;
+
 interface TodoItemProps {
     toggleTodo: (id: number) => void;
     removeTodo: (id: number) => void;
+    editTodo: (id: number, todo: Itodo) => void;
     todo: Itodo;
 }
 
-const TodoItem = ({ toggleTodo, removeTodo, todo }: TodoItemProps) => {
-    const [isShowModal, setIsShowModal] = useState(false);
+const TodoItem = ({
+    toggleTodo,
+    removeTodo,
+    editTodo,
+    todo,
+}: TodoItemProps) => {
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [editValue, setEditValue] = useState(todo);
+    const { text, done } = todo;
+    const goalMoment = moment(todo.goalDate, "YYYY-MM-DD");
+    const goalDate = todo.goalDate ? (
+        goalMoment.diff(moment(), "days") > 0 ? (
+            goalMoment.fromNow()
+        ) : (
+            <BeforeDate>{goalMoment.fromNow()}</BeforeDate>
+        )
+    ) : (
+        ""
+    );
 
-    const done = todo.done;
     const handleToggle = () => {
         toggleTodo(todo.id);
     };
 
     const handleRemove = () => {
         removeTodo(todo.id);
-        setIsShowModal(false);
+        setShowDeleteModal(false);
     };
+
+    const handleEdit = () => {
+        editTodo(todo.id, editValue);
+        setShowEditModal(false);
+    };
+
+    const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+        setEditValue((prev) => ({ ...prev, text: e.target.value }));
+    const handleDateChange = (value: Moment | null, dateString: string) =>
+        setEditValue((prev) => ({ ...prev, goalDate: dateString }));
 
     return (
         <TodoItemBlock>
             <CheckCircle done={done} onClick={handleToggle}>
                 {done && <CheckOutlined />}
             </CheckCircle>
-            <Text done={done}>{todo.text}</Text>
-            <Text done={done}>{todo.goalDate}</Text>
-            <Remove onClick={() => setIsShowModal(true)}>
+            <Text done={done}>{text}</Text>
+            <Text done={done}>{goalDate}</Text>
+            <Edit onClick={() => setShowEditModal(true)}>
+                <EditOutlined />
+            </Edit>
+            <Modal
+                title="Todo Edit"
+                visible={showEditModal}
+                onOk={handleEdit}
+                onCancel={() => setShowEditModal(false)}
+                okText="수정"
+                cancelText="취소"
+            >
+                <InputForm
+                    handleTextChange={handleTextChange}
+                    handleDateChange={handleDateChange}
+                    value={editValue}
+                />
+            </Modal>
+            <Remove onClick={() => setShowDeleteModal(true)}>
                 <DeleteOutlined />
             </Remove>
+
             <Modal
-                title={todo.text}
-                visible={isShowModal}
+                title={text}
+                visible={showDeleteModal}
                 onOk={handleRemove}
-                onCancel={() => setIsShowModal(false)}
+                onCancel={() => setShowDeleteModal(false)}
                 okText="삭제"
                 cancelText="취소"
             >
