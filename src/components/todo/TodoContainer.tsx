@@ -9,21 +9,25 @@ import Loading from "components/common/Loading";
 const TodoContainer = () => {
     const {
         todoState,
-        nextIdState,
+        nextId,
         incrementNextId,
         toggleTodo,
         removeTodo,
         createTodo,
     } = useTodo();
 
+    if (todoState === null) {
+        return <Loading />;
+    }
+    console.log(todoState);
     return (
         <>
             <TodoTemplate>
                 <TodoHead />
                 <TodoCreate
-                    nextId={nextIdState}
+                    nextId={nextId.current}
                     createTodo={createTodo}
-                    incrementNextId={incrementNextId}
+                    incrementNextId={() => incrementNextId(todoState)}
                 />
                 <TodoList
                     toggleTodo={toggleTodo}

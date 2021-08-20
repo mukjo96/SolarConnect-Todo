@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export type Itodo = {
     id: number;
@@ -12,7 +12,7 @@ let initialTodos: Itodo[] = [];
 
 export const useTodo = () => {
     const [todoState, setTodoState] = useState(initialTodos);
-    const [nextIdState, setNextIdState] = useState(0);
+    const nextId = useRef(1);
 
     useEffect(() => {
         loadData();
@@ -22,8 +22,12 @@ export const useTodo = () => {
         saveData();
     }, [todoState]);
 
-    const incrementNextId = () => {
-        setNextIdState((prev) => prev + 1);
+    const incrementNextId = (todoList: Itodo[]) => {
+        if (todoList.length > 0) {
+            nextId.current = todoList[todoList.length - 1].id + 1;
+        } else {
+            nextId.current = 0;
+        }
     };
 
     const toggleTodo = (id: number) => {
@@ -39,16 +43,16 @@ export const useTodo = () => {
 
     const removeTodo = (id: number) => {
         setTodoState((prevState) =>
-            prevState.filter((todo: Itodo) => todo.id === id)
+            prevState.filter((todo: Itodo) => todo.id !== id)
         );
     };
 
     const createTodo = (todo: Itodo) => {
-        const nextId = todoState.length + 1;
+        incrementNextId(todoState);
         setTodoState((prevState) =>
             prevState.concat({
                 ...todo,
-                id: nextId,
+                id: nextId.current,
             })
         );
     };
@@ -56,10 +60,7 @@ export const useTodo = () => {
     const loadData = () => {
         let data = localStorage.getItem("todos");
         if (data === undefined) data = "";
-        initialTodos = JSON.parse(data!);
-        if (initialTodos && initialTodos.length >= 1) {
-            incrementNextId();
-        }
+        initialTodos = JSON.parse(data!) ?? [];
         setTodoState(initialTodos);
     };
 
@@ -69,7 +70,7 @@ export const useTodo = () => {
 
     return {
         todoState,
-        nextIdState,
+        nextId,
         incrementNextId,
         toggleTodo,
         removeTodo,
