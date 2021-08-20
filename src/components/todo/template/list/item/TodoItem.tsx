@@ -7,6 +7,7 @@ import moment, { Moment } from "moment";
 
 import InputForm from "../../create/InputForm";
 import { ellipsisModal } from "components/common/Modal";
+import { validateText } from "utils/validate";
 
 const Remove = styled.div`
     display: flex;
@@ -60,6 +61,9 @@ const Text = styled.div<{ done: boolean; isOverflow?: boolean }>`
         css`
             color: #ced4da;
             text-decoration: line-through;
+            span {
+                color: #ced4da;
+            }
         `}
     cursor: ${(props) => props.isOverflow && "pointer"};
 `;
@@ -114,8 +118,10 @@ const TodoItem = ({
     };
 
     const handleEdit = () => {
-        editTodo(todo.id, editValue);
-        setShowEditModal(false);
+        if (validateText(editValue.text) === "success") {
+            editTodo(todo.id, editValue);
+            setShowEditModal(false);
+        }
     };
 
     const isEllipsisActive = (ref: HTMLInputElement | null) => {
@@ -156,6 +162,11 @@ const TodoItem = ({
                 visible={showEditModal}
                 onOk={handleEdit}
                 onCancel={() => setShowEditModal(false)}
+                okButtonProps={
+                    validateText(editValue.text) !== "success"
+                        ? { disabled: true }
+                        : { disabled: false }
+                }
                 okText="수정"
                 cancelText="취소"
             >

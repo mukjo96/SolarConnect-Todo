@@ -24,6 +24,10 @@ const GlobalStyle = createGlobalStyle`
       color: white !important;
       background: #17ad62 !important;
     }
+    &:disabled{
+      background: #f5f5f5 !important;
+      border-color: #d9d9d9 !important;
+    }
     
     }
 
