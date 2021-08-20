@@ -1,5 +1,9 @@
 # ToDo List
 
+## 배포 링크
+
+https://solar-connect-todo.vercel.app/
+
 ## 설치
 
 `npm install`
@@ -30,5 +34,3 @@
 -   [x] 입력 폼을 접는 트랜지션 추가
 -   [x] Todo List의 오늘 이전 날짜 강조
 -   [x] Todo overflow시 클릭 활성화 및 모달로 전체 내용 확인 가능
-
-## 배포 링크
